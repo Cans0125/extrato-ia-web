@@ -1,0 +1,79 @@
+import { NextResponse } from "next/server";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import ExcelJS from "exceljs";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+
+const schema = {
+  type: SchemaType.ARRAY,
+  description: "Lista de transações financeiras do extrato",
+  items: {
+    type: SchemaType.OBJECT,
+    properties: {
+      data: { type: SchemaType.STRING, description: "Data no formato DD/MM/AAAA" },
+      descricao: { type: SchemaType.STRING, description: "Descrição ou histórico da transação" },
+      valor: { type: SchemaType.NUMBER, description: "Valor numérico (positivo para entrada, negativo para saída)" },
+      tipo: { type: SchemaType.STRING, description: "Entrada ou Saida" },
+    },
+    required: ["data", "descricao", "valor", "tipo"],
+  },
+};
+
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+
+    if (!file) {
+      return NextResponse.json({ error: "Nenhum arquivo enviado." }, { status: 400 });
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const base64Data = Buffer.from(arrayBuffer).toString("base64");
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.1-flash-lite",
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: schema,
+      },
+    });
+
+    const pdfPart = {
+      inlineData: {
+        data: base64Data,
+        mimeType: "application/pdf",
+      },
+    };
+
+    const prompt = "Extraia todas as transações deste extrato bancário com precisão.";
+    const result = await model.generateContent([prompt, pdfPart]);
+    const transacoes = JSON.parse(result.response.text());
+
+    // Criar a planilha Excel na memória
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Extrato Processado");
+
+    worksheet.columns = [
+      { header: "Data", key: "data", width: 15 },
+      { header: "Descrição", key: "descricao", width: 40 },
+      { header: "Valor (R$)", key: "valor", width: 15 },
+      { header: "Tipo", key: "tipo", width: 15 },
+    ];
+
+    transacoes.forEach((t: any) => worksheet.addRow(t));
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    return new NextResponse(buffer, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="extrato_processado.xlsx"`,
+      },
+    });
+  } catch (error: any) {
+    console.error("Erro no processamento:", error);
+    return NextResponse.json({ error: error.message || "Erro ao processar o arquivo" }, { status: 500 });
+  }
+}
