@@ -1,0 +1,6 @@
+git init
+git add .
+git commit -m "Primeiro commit: Extrator Contabil IA"
+git branch -M main
+git remote add origin https://github.com/Cans0125/extrato-ia-web.git
+git push -u origin main
