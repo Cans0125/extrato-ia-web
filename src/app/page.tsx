@@ -354,14 +354,14 @@ export default function Home() {
                         {!isPro ? (
                             <button
                                 onClick={handleSubscribe}
-                                style={{ padding: "8px 16px", backgroundColor: "#059669", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
+                                style={{ padding: "6px 10px", backgroundColor: "#059669", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
                             >
                                 ⭐ Assinar Plano Pro
                             </button>
                         ) : (
                             <button
                                 onClick={handleManageSubscription}
-                                style={{ padding: "8px 16px", backgroundColor: "#374151", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
+                                style={{ padding: "6px 10px", backgroundColor: "#374151", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
                             >
                                 ⚙️ Gerenciar / Cancelar Plano
                             </button>
@@ -369,7 +369,7 @@ export default function Home() {
 
                         <button
                             onClick={handleLogout}
-                            style={{ padding: "8px 16px", backgroundColor: "#7f1d1d", color: "#fca5a5", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
+                            style={{ padding: "6px 10px", backgroundColor: "#7f1d1d", color: "#fca5a5", border: "none", borderRadius: "6px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
                         >
                             Sair
                         </button>
