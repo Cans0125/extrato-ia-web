@@ -2,8 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\app"
+    "\\src\\app",
+    "\\src\\app\\api",
+    "\\src\\app\\api\\checkout",
+    "\\src\\app\\api\\portal"
   ],
-  "SelectedNode": "\\src\\app\\icon.png",
+  "SelectedNode": "\\src\\app\\page.tsx",
   "PreviewInSolutionExplorer": false
 }

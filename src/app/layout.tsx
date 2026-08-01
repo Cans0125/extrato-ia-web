@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "Extrator Contábil IA",
     description: "Seu extrator de extratos bancários com IA",
+    icons: {
+        icon: "/icon.png",
+    },
 };
 
 export default function RootLayout({
